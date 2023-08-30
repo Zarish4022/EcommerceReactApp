@@ -30,14 +30,12 @@ const InputContainer = styled.div`
 const CustomInput = styled(GenericInput)`
   flex: 8;
 `;
-
 const Button = styled.button`
   flex: 1;
   border: none;
   background-color: teal;
   color: white;
 `;
-
 const Newsletter = () => {
   return (
     <Container>

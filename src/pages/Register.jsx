@@ -46,7 +46,7 @@ const CustomInput = styled(GenericInput)`
     color: #aaa;
   }
 `;
-
+const Generic1Button = styled.button``;
 const Agreement = styled.span`
   font-size: 12px;
   margin: 20px 0px;
@@ -145,9 +145,8 @@ const Register = ({ onFormSubmit, onFormSwitch }) => {
             By creating an account, I consent to the processing of my personal
             data in accordance with <b>PRIVACY POLICY</b>
           </Agreement>
-
-          <GenericButton type="submit">Create</GenericButton>
         </Form>
+        <Generic1Button type="button">Register</Generic1Button>
         <HaveAccountText>
           Already have an account?{" "}
           <Link to="/login" style={{ fontWeight: "bold" }}>

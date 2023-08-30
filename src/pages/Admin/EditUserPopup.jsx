@@ -1,5 +1,5 @@
-import { Close } from "@mui/icons-material";
-import React, { useState } from "react";
+import { Close, Edit } from "@mui/icons-material";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 
 const ModalOverlay = styled.div`
@@ -22,7 +22,7 @@ const ModalContent = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 25%;
   color: black;
-  text-align: center;
+
   position: relative; /* Add relative positioning */
 `;
 
@@ -33,6 +33,7 @@ const Form = styled.form`
 
 const FormGroup = styled.div`
   display: flex;
+
   flex-direction: column;
   margin-bottom: 15px;
   text-align: left;
@@ -80,22 +81,78 @@ const CloseButton = styled.button`
     color: black;
   }
 `;
+const UserPicture = styled.div`
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  left: 35%;
+`;
 
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+const EditIcon = styled(Edit)`
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  color: white;
+  padding: 5px;
+  background-color: gray;
+  border-radius: 50%;
+  cursor: pointer;
+`;
+const HiddenInput = styled.input`
+  display: none;
+`;
 const EditUserPopup = ({ user, onClose, onUpdateUser }) => {
   const [editedName, setEditedName] = useState(user.name);
   const [editedEmail, setEditedEmail] = useState(user.email);
+  const [editedPic, setEditedPic] = useState(user.img);
+  const [editedNum, setEditedNum] = useState(user.num);
+  const hiddenFileInputRef = useRef(null);
 
   const handleEditFormSubmit = (e) => {
     e.preventDefault();
-    onUpdateUser({ ...user, name: editedName, email: editedEmail });
+    onUpdateUser({
+      ...user,
+      name: editedName,
+      email: editedEmail,
+      img: editedPic,
+      num: editedNum,
+    });
     onClose();
   };
 
+  const handleEditIconClick = () => {
+    hiddenFileInputRef.current.click(); // Trigger the hidden file input
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setEditedPic(URL.createObjectURL(selectedFile));
+    }
+  };
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <h2>Edit User</h2>
         <Form onSubmit={handleEditFormSubmit}>
+          <FormGroup>
+            <UserPicture>
+              <Image src={editedPic} />
+              <EditIcon onClick={handleEditIconClick} />
+            </UserPicture>
+            <HiddenInput
+              type="file"
+              ref={hiddenFileInputRef}
+              onChange={handleFileChange}
+            />
+          </FormGroup>
           <FormGroup>
             <Label>Name:</Label>
             <Input
@@ -112,6 +169,15 @@ const EditUserPopup = ({ user, onClose, onUpdateUser }) => {
               onChange={(e) => setEditedEmail(e.target.value)}
             />
           </FormGroup>
+          <FormGroup>
+            <Label>Number:</Label>
+            <Input
+              type="phone"
+              value={editedNum}
+              onChange={(e) => setEditedNum(e.target.value)}
+            />
+          </FormGroup>
+
           <ButtonContainer>
             <Button type="submit">Save</Button>
             <Button onClick={onClose}>Cancel</Button>

@@ -52,6 +52,10 @@ const List = styled.ul`
 const ListItem = styled.li`
   width: 50%;
   margin-bottom: 20px;
+  &:hover {
+    color: teal;
+    cursor: pointer;
+  }
 `;
 const Right = styled.div`
   flex: 1;
@@ -70,9 +74,7 @@ const Payment = styled.img`
   padding-left: 20%;
   padding-top: 0px;
 `;
-const H1 = styled.h3`
-  text-align: center;
-`;
+
 const Footer = () => {
   const socialIcons = [
     { color: "3B5999", icon: <Facebook /> },

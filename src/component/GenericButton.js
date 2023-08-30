@@ -15,7 +15,6 @@ const StyledButton = styled.button`
     color: black;
   }
 `;
-
 const GenericButton = ({ children, ...rest }) => {
   return <StyledButton {...rest}>{children}</StyledButton>;
 };

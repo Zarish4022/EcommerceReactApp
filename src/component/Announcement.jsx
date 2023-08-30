@@ -17,7 +17,6 @@ const scrollText = keyframes`
     transform: translateX(-100%);
   }
 `;
-
 const TextWrapper = styled.div`
   animation: ${scrollText} 15s linear infinite;
   white-space: nowrap;
@@ -33,5 +32,4 @@ const Announcement = () => {
     </Container>
   );
 };
-
 export default Announcement;

@@ -4,17 +4,20 @@ import Navbar from "../../component/Navbar";
 import Footer from "../../component/Footer";
 import { Link } from "react-router-dom";
 import { useCart } from "./ContextCart";
-import QuantityCounter from "./QuantityCounter";
+
 import { Delete } from "@mui/icons-material";
 
 const Container = styled.div``;
+
 const Wrapper = styled.div`
   padding: 10px;
 `;
+
 const Title = styled.h1`
   font-weight: 600;
   text-align: center;
 `;
+
 const Top = styled.div`
   display: flex;
   align-items: center;
@@ -40,8 +43,6 @@ const TopButton = styled.button`
   }
 `;
 
-const TopTexts = styled.div``;
-
 const Bottom = styled.div`
   display: flex;
   justify-content: space-between;
@@ -52,12 +53,13 @@ const Bottom = styled.div`
 const Info = styled.div`
   flex: 1;
 `;
+
 const Product = styled.div`
   display: flex;
   justify-content: space-between;
   border: 0.5px solid lightgray;
   border-radius: 10px;
-  padding: 16px;
+  padding: 2px;
 `;
 const ProductDetail = styled.div`
   flex: 3;
@@ -89,22 +91,6 @@ const PriceDetail = styled.div`
   align-items: center;
 `;
 
-const AmountContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const ProductPrice = styled.div`
-  font-size: 30px;
-  font-weight: 200;
-`;
-const Price = styled.span`
-  font-weight: 600;
-  font-size: 20px;
-  margin-bottom: 12px;
-`;
-
 const DeleteButton = styled.button`
   background: none;
   border: none;
@@ -121,16 +107,14 @@ const CartEmpty = styled.p`
   margin-top: 25px;
   padding: 60px;
 `;
+const Wish = () => {
+  const { wishItems, setWishItems, wishCount, setWishCount } = useCart();
+  console.log("wishItems:", wishItems);
 
-const Cart = () => {
-  const { cartItems, setCartItems, removeCartItem, isCartEmpty } = useCart();
-  console.log(cartItems);
-  const updateQuantity = (itemId, newQuantity) => {
-    const updatedItems = cartItems.map((item) =>
-      item.id === itemId ? { ...item, cartquantity: newQuantity } : item
-    );
-
-    setCartItems(updatedItems);
+  const removeItem = (itemId) => {
+    const updatedItems = wishItems.filter((item) => item.id !== itemId);
+    setWishItems(updatedItems);
+    setWishCount(wishCount - 1);
   };
 
   return (
@@ -138,25 +122,21 @@ const Cart = () => {
       <Announcement />
       <Navbar />
       <Wrapper>
+        <Title>Your WishList</Title>
         <Top>
           <Link to={`/products`}>
-            <TopButton>CONTINUE SHOPPING</TopButton>
-          </Link>
-          <TopTexts></TopTexts>
-          <Link to="/summary">
-            <TopButton disabled={isCartEmpty}>CHECKOUT NOW</TopButton>
+            <TopButton>Back To SHOPPING</TopButton>
           </Link>
         </Top>
         <Bottom>
           <Info>
-            {cartItems.length === 0 ? (
-              <CartEmpty>Your cart is empty</CartEmpty>
+            {wishItems.length === 0 ? (
+              <CartEmpty>Your wishlist is empty</CartEmpty>
             ) : (
-              cartItems.map((item) => (
+              wishItems.map((item) => (
                 <Product key={item.id}>
                   <ProductDetail>
                     <Image src={item.img} />
-
                     <Deatils>
                       <ProductName>
                         <b>Product:</b> {item.name}
@@ -174,25 +154,10 @@ const Cart = () => {
                     </Deatils>
                   </ProductDetail>
                   <hr />
-                  <PriceDetail>
-                    <Price>
-                      <u>Quantity</u>
-                    </Price>
-                    <AmountContainer>
-                      <QuantityCounter
-                        onQuantityChange={updateQuantity}
-                        initialValue={item.quantity} // Pass the initial quantity value from your item
-                        QuantityItem={item.cartquantity}
-                        productId={item.id}
-                      />
-                    </AmountContainer>
-                    <ProductPrice>
-                      $ {item.price * item.cartquantity}
-                    </ProductPrice>
-                  </PriceDetail>
+
                   <hr />
                   <PriceDetail>
-                    <DeleteButton onClick={() => removeCartItem(item.id)}>
+                    <DeleteButton onClick={() => removeItem(item.id)}>
                       <Delete />
                     </DeleteButton>
                   </PriceDetail>
@@ -208,4 +173,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default Wish;

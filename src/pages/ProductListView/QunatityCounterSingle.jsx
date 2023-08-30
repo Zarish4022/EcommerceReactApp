@@ -21,7 +21,6 @@ const IncreaseButton = styled.button`
   border-radius: 50%;
   cursor: pointer;
   padding: 5px 10px;
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   font-size: 20px;
   font-weight: 600;
 `;
@@ -64,7 +63,7 @@ const QuantityCounter = ({
       <DecreseButton onClick={decrement} disabled={quantity <= 1}>
         -
       </DecreseButton>
-      <Quantity>{quantity}</Quantity>
+      <Quantity>{quantity ? quantity : 1}</Quantity>
       <IncreaseButton onClick={increment} disabled={quantity === initialValue}>
         +
       </IncreaseButton>

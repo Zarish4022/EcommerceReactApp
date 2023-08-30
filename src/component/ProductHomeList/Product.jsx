@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-  FavoriteBorderOutlined,
+  CheckCircle,
+  Delete,
+  Favorite,
+  FavoriteBorderRounded,
+  Preview,
   ShoppingCartOutlined,
-  Visibility,
 } from "@mui/icons-material";
-
-import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 import { useCart } from "../../pages/cart/ContextCart";
+import { useAuth } from "../Auth";
+import DeleteProduct from "../../pages/Admin/DeleteProduct";
+import { Link } from "react-router-dom";
 
 const Info = styled.div`
   opacity: 0;
@@ -52,7 +56,7 @@ const Circle = styled.div`
 `;
 
 const Image = styled.img`
-  height: 95%;
+  height: 75%;
   z-index: 2;
   object-fit: cover;
 `;
@@ -63,35 +67,96 @@ const Icon = styled.div`
   border-radius: 50%;
   background-color: white;
   display: flex;
+  cursor: pointer;
   align-items: center;
   justify-content: center;
   margin: 10px;
   transition: all 0.5s ease;
   &:hover {
-    background-color: #e9f5f5;
     transform: scale(1.2);
+  }
+  &:disabled {
+    background-color: teal;
   }
 `;
 
-const Product = ({ item }) => {
-  const { addToCart, addtoWishlist } = useCart();
+const Product = ({ item, onDelete }) => {
+  const {
+    addToCart,
+    addToWish,
+    isProductInCart,
+    isProductInWish,
+    removeItem,
+    removeCartItem,
+  } = useCart();
+
+  const [deletingProduct, setDeletingProduct] = useState(false);
+  const { isAdmin } = useAuth();
+  const isAlreadyInCart = isProductInCart(item.id);
   const handleCartClick = () => {
-    addToCart(item);
+    if (isAlreadyInCart) {
+      removeCartItem(item.id);
+    } else {
+      addToCart(item);
+    }
+  };
+  const isAlreadyInWish = isProductInWish(item.id);
+  const handleWishClick = () => {
+    if (isAlreadyInWish) {
+      removeItem(item.id);
+    } else {
+      addToWish(item);
+    }
+  };
+
+  const handleDeletClick = () => {
+    setDeletingProduct(true);
   };
 
   return (
     <Container>
       <Circle />
-      <Image src={item.img} />
+      <Image src={item.img} alt={item.name} />
       <Info>
-        <Icon onClick={handleCartClick}>
-          <ShoppingCartOutlined />
+        <Icon
+          onClick={handleCartClick}
+          disabled={isAlreadyInCart} // Pass the result of isProductInCart
+        >
+          {isAlreadyInCart ? (
+            <CheckCircle style={{ color: "teal" }} />
+          ) : (
+            <ShoppingCartOutlined />
+          )}
         </Icon>
-
-        <Icon>
-          <FavoriteBorderOutlined />
+        <Link to={`/singleProduct/${item.id}`} style={{ color: "black" }}>
+          <Icon>
+            <Preview />
+          </Icon>
+        </Link>
+        {isAdmin && (
+          <Icon>
+            <Delete onClick={handleDeletClick} />
+          </Icon>
+        )}
+        <Icon onClick={handleWishClick}>
+          {isAlreadyInWish ? (
+            <Favorite style={{ color: "red" }} />
+          ) : (
+            <FavoriteBorderRounded />
+          )}
         </Icon>
       </Info>
+      {deletingProduct && (
+        <DeleteProduct
+          onDelete={() => {
+            onDelete(item.id);
+            setDeletingProduct(false);
+          }}
+          onClose={() => {
+            setDeletingProduct(false);
+          }}
+        />
+      )}
     </Container>
   );
 };

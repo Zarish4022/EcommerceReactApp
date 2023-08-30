@@ -11,5 +11,4 @@ const PrivateAdminRoute = ({ path, element }) => {
     return <Navigate to="/login" />;
   }
 };
-
 export default PrivateAdminRoute;

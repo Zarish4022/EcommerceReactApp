@@ -1,5 +1,8 @@
-import { ShoppingCartOutlined, WavingHand } from "@mui/icons-material";
-import React from "react";
+import {
+  FavoriteBorderOutlined,
+  ShoppingCartOutlined,
+} from "@mui/icons-material";
+import React, { useEffect, useRef, useState } from "react"; // Import useState
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { useCart } from "../pages/cart/ContextCart";
@@ -12,7 +15,7 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  padding: 10px 20px;
+  padding: 0px 20px;
   text-align: center;
   display: flex;
   justify-content: space-between;
@@ -34,6 +37,7 @@ const Right = styled.div`
   width: 33.33333%;
   flex: 1;
   text-align: center;
+  margin-bottom: 3px;
   display: flex;
   justify-content: flex-end;
 `;
@@ -46,29 +50,83 @@ const MenuItem = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  width: 80px;
-  height: 42px;
-
-  &:hover {
-    background-color: pink;
-  }
 `;
 
-// Define styles for active NavLink
+const UserAvatar = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ccc;
+  display: flex;
+  margin-left: 7px;
+  justify-content: center;
+  margin-right: 10px;
+
+  cursor: pointer;
+  overflow: hidden;
+`;
+const Count = styled.div`
+  position: absolute;
+  top: 47px;
+  margin-left: 15px;
+  background-color: teal;
+  border-radius: 50%;
+  width: 15px;
+  overflow: hidden;
+  font-size: 12px;
+  height: 15px;
+  color: white;
+`;
 const ActiveNavLink = styled(NavLink)`
   text-decoration: none;
   color: black;
   font-weight: 600;
+  padding: 7px;
+  &:hover {
+    color: teal;
+    font-weight: bold;
+  }
   &.active {
     color: teal;
     font-weight: bold;
   }
 `;
-
+const Dropdown = styled.div`
+  position: absolute;
+  top: 95px;
+  right: 12px;
+  width: auto;
+  background-color: white;
+  overflow: hidden;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  display: ${(props) => (props.visible ? "block" : "none")};
+  z-index: 2;
+`;
+const DropdownItem = styled.div`
+  padding: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #f0f0f0;
+    color: black;
+  }
+`;
 const Navbar = () => {
-  const { cartCount } = useCart();
+  const { cartCount, wishCount } = useCart();
   const auth = useAuth();
-
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
   return (
     <Container>
       <Wrapper>
@@ -77,7 +135,6 @@ const Navbar = () => {
             <Logo>ZARI.STORE</Logo>
           </ActiveNavLink>
         </Left>
-
         <Right>
           <MenuItem>
             <ActiveNavLink to="/products">Products</ActiveNavLink>
@@ -85,52 +142,62 @@ const Navbar = () => {
           <MenuItem>
             <ActiveNavLink to="/cart">
               <ShoppingCartOutlined />
-              {cartCount}
+              <Count> {cartCount}</Count>
             </ActiveNavLink>
           </MenuItem>
           <MenuItem>
-            <h3>
-              <WavingHand /> {auth.user.name}
-            </h3>
+            <ActiveNavLink to="/wishlist">
+              <FavoriteBorderOutlined />
+              <Count> {wishCount}</Count>
+            </ActiveNavLink>
           </MenuItem>
-          {auth.isAuthenticated ? (
-            <>
-              {auth.user && auth.user.role === "admin" && (
-                <MenuItem>
-                  <ActiveNavLink to="/dashboard">Admin</ActiveNavLink>
-                </MenuItem>
-              )}
 
-              <MenuItem>
-                <NavLink
-                  style={{
-                    textDecoration: "none",
-                    padding: "7px",
-                    borderRadius: "5px",
-                    color: "black",
-                    fontWeight: "bold",
-                  }}
-                  to="/login"
-                  onClick={auth.logout}
-                >
-                  Logout
-                </NavLink>
-              </MenuItem>
-            </>
+          {auth?.user?.name ? (
+            <MenuItem>
+              <UserAvatar
+                username={auth.user.name}
+                onClick={() => setShowDropdown(!showDropdown)}
+                ref={dropdownRef} // Toggle dropdown on click
+              >
+                <img
+                  src={`http://localhost:3000/${auth.user?.img}`}
+                  alt="User Avatar"
+                />
+              </UserAvatar>
+              <Dropdown visible={showDropdown}>
+                <DropdownItem>
+                  <MenuItem style={{ fontWeight: "bold" }}>
+                    {auth.user.name}
+                  </MenuItem>
+                </DropdownItem>
+                {auth.isAuthenticated && (
+                  <>
+                    {auth.user && auth.user.role === "admin" && (
+                      <DropdownItem>
+                        <ActiveNavLink
+                          to="/dashboard"
+                          style={{ fontWeight: "bold" }}
+                        >
+                          Dashboard
+                        </ActiveNavLink>
+                      </DropdownItem>
+                    )}
+                    <DropdownItem>
+                      <ActiveNavLink
+                        style={{ color: "red" }}
+                        to="/login"
+                        onClick={auth.logout}
+                      >
+                        Logout
+                      </ActiveNavLink>
+                    </DropdownItem>
+                  </>
+                )}
+              </Dropdown>
+            </MenuItem>
           ) : (
             <MenuItem>
-              <NavLink
-                to="/login"
-                style={{
-                  textDecoration: "none",
-                  padding: "7px",
-                  borderRadius: "5px",
-                  color: "black",
-                  fontWeight: "bold",
-                }}
-              >
-                Login
-              </NavLink>
+              <ActiveNavLink to="/login">Login</ActiveNavLink>
             </MenuItem>
           )}
         </Right>

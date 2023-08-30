@@ -57,7 +57,7 @@ const Login = () => {
 
     if (existingUser) {
       auth.login({ ...existingUser });
-      navigate(existingUser.role === "admin" ? "/user" : "/");
+      navigate(existingUser.role === "admin" ? "/dashboard" : "/");
     } else {
       alert("User does not exist");
     }

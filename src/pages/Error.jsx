@@ -1,40 +1,33 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import GenericButton from "../component/GenericButton";
 
 const Container = styled.div`
-  width: 100%;
-  height: 100vh;
-  background: linear-gradient(
-      rgba(255, 255, 255, 0.5),
-      rgba(255, 255, 255, 0.5)
-    ),
-    url("/images/login2.jpg");
-  background-size: cover;
   display: flex;
-  align-items: center;
   justify-content: center;
 `;
 
 const Wrapper = styled.div`
   width: 50%;
   text-align: center;
-  padding: 10%;
-  font-size: 24px;
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 10px;
+  padding: 5%;
+  font-size: 20px;
 `;
-
+const Image = styled.img`
+  width: 40%;
+`;
 const Success = () => {
   return (
     <Container>
       <Wrapper>
-        <h3>PAGE NOT FOUND</h3>
-
-        <Link to={"/"}>
-          <GenericButton>BACK TO HOME </GenericButton>
-        </Link>
+        <Image src="\images\error.png" alt="error" />
+        <h1>Sorry!</h1>
+        <h2>Page Not Found</h2>
+        <p>
+          Please check that the Web site address is spelled correctly. Or got to
+          our <Link to="/">home page</Link> , and use the menus to navigate to a
+          specific section.
+        </p>
       </Wrapper>
     </Container>
   );

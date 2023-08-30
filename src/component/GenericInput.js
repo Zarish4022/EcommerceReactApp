@@ -10,7 +10,6 @@ const StyledInput = styled.input`
   font-size: 16px;
   outline: none;
 `;
-
 const GenericInput = ({ placeholder, type, ...rest }) => {
   return <StyledInput placeholder={placeholder} type={type} {...rest} />;
 };

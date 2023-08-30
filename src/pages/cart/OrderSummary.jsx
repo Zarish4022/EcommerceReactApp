@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useCart } from "./ContextCart";
@@ -7,10 +7,9 @@ import Navbar from "../../component/Navbar";
 import Announcement from "../../component/Announcement";
 const Container = styled.div`
   display: flex;
+  align-items: center;
   justify-content: center;
-  background-color: teal;
-  min-height: 100vh;
-  padding: 50px;
+  padding: 20px;
 `;
 
 const Wrapper = styled.div`
@@ -20,10 +19,10 @@ const Wrapper = styled.div`
 `;
 
 const Column = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 0 15px;
+  width: 50%;
+  padding: 5px;
 `;
 const SummaryTotal = styled.div`
   border: 2px solid lightgray;
@@ -50,11 +49,13 @@ const SummaryItem = styled.div`
   justify-content: space-between;
   align-items: center;
   margin: 10px 0;
+  border-bottom: 2px solid lightgray;
 `;
 
 const SummaryItemText = styled.span`
   flex: 1;
   font-weight: 700;
+  margin-left: 10px;
 `;
 
 const SummarItemPrice = styled.span`
@@ -81,10 +82,19 @@ const Button = styled.button`
   &:hover {
     background-color: #555;
   }
+  &:disabled {
+    background-color: white;
+    color: gray;
+    cursor: not-allowed;
+  }
+`;
+const SummaryImage = styled.img`
+  width: 60px;
 `;
 
 const OrderSummary = () => {
-  const { cartItems } = useCart();
+  const { cartItems, clearCart } = useCart();
+  const [isFormFilled, setIsFormFilled] = useState(false);
   const calculateTotal = (items) => {
     const subtotal = calculateSubtotal(items);
     const shipping = 250;
@@ -92,7 +102,10 @@ const OrderSummary = () => {
   };
 
   const calculateSubtotal = (items) => {
-    return items.reduce((total, item) => total + item.quantity * item.price, 0);
+    return items.reduce(
+      (total, item) => total + item.cartquantity * item.price,
+      0
+    );
   };
 
   return (
@@ -106,37 +119,35 @@ const OrderSummary = () => {
               <SummarTitle>ORDER SUMMARY</SummarTitle>
               {cartItems.map((item) => (
                 <SummaryItem key={item.id}>
-                  <SummaryItemText>{item.name}:</SummaryItemText>
+                  <SummaryImage src={item.img} />
+                  <SummaryItemText>
+                    {item.name} ({item.quantity})
+                  </SummaryItemText>
                   <SummarItemPrice>${item.price.toFixed(2)}</SummarItemPrice>
                 </SummaryItem>
               ))}
               <SummaryTotal>
-                <SummaryItem>
+                <SummaryItem style={{ border: "none" }}>
                   <SummaryItemText>Subtotal:</SummaryItemText>
                   <SummarItemPrice>
                     ${calculateSubtotal(cartItems).toFixed(2)}
                   </SummarItemPrice>
                 </SummaryItem>
-                <SummaryItem>
+                <SummaryItem style={{ border: "none" }}>
                   <SummaryItemText>Shipping:</SummaryItemText>
                   <SummarItemPrice>$250</SummarItemPrice>
                 </SummaryItem>
-                <SummaryItem type="total">
+                <SummaryItem type="total" style={{ border: "none" }}>
                   <SummaryItemText>Total:</SummaryItemText>
                   <SummarItemPrice>
                     ${calculateTotal(cartItems).toFixed(2)}
                   </SummarItemPrice>
                 </SummaryItem>
               </SummaryTotal>
-              <ButtonContainer>
-                <Link to={`/products`}>
-                  <Button>Add More</Button>
-                </Link>
-              </ButtonContainer>
             </SummaryContainer>
           </Column>
           <Column>
-            <OrderForm />
+            <OrderForm onFormFilled={setIsFormFilled} />
           </Column>
         </Wrapper>
       </Container>

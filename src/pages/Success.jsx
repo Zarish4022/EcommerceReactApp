@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { styled } from "styled-components";
-
+import GenericButton from "../component/GenericButton";
 const Container = styled.div`
   width: auto;
   height: 100vh;
@@ -17,15 +18,24 @@ const Container = styled.div`
 const Wrapper = styled.div`
   width: auto;
   text-align: center;
-  padding: 10%;
-  font-size: 24px;
+  padding: 5%;
+  font-size: 20px;
   background-color: rgba(255, 255, 255, 255);
   border-radius: 10px;
 `;
+
 const Success = () => {
   return (
     <Container>
-      <Wrapper>YOUR ORDER HAS BEEN PLACED SUCCESSFULLY</Wrapper>
+      <Wrapper>
+        <h2>YOUR ORDER HAS BEEN PLACED SUCCESSFULLY</h2>
+        <p> Thanks For Trusting Us!</p>
+        <p>Want Some More !!</p>
+        <p> Whats You Waiting For??</p>
+        <Link to={"/"}>
+          <GenericButton>Continue Shopping </GenericButton>
+        </Link>
+      </Wrapper>
     </Container>
   );
 };

@@ -22,7 +22,7 @@ const ModalContent = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 25%;
   color: black;
-  text-align: center;
+
   position: relative; /* Add relative positioning */
 `;
 
@@ -84,7 +84,7 @@ const CloseButton = styled.button`
 const AddNewUserPopup = ({ onClose, onAddNewUser }) => {
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
-
+  const [newImage, setNewImg] = useState("");
   const handleAddNewUser = (e) => {
     e.preventDefault();
     if (newName && newEmail) {
@@ -93,11 +93,16 @@ const AddNewUserPopup = ({ onClose, onAddNewUser }) => {
         id: maxId + 1,
         name: newName,
         email: newEmail,
+        img: newImage,
+        role: "user",
       };
       onAddNewUser(newUser);
+      console.log(newUser);
+      console.log(UserLogin);
       onClose();
     }
   };
+
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -112,6 +117,7 @@ const AddNewUserPopup = ({ onClose, onAddNewUser }) => {
               type="text"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
+              maxLength={15}
             />
           </FormGroup>
           <FormGroup>
@@ -120,6 +126,16 @@ const AddNewUserPopup = ({ onClose, onAddNewUser }) => {
               type="email"
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label>Img:</Label>
+
+            <Input
+              type="file"
+              onChange={(e) =>
+                setNewImg(URL.createObjectURL(e.target.files[0]))
+              }
             />
           </FormGroup>
           <ButtonContainer>

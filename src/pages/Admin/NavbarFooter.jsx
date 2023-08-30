@@ -1,8 +1,6 @@
-import { ShoppingCartOutlined } from "@mui/icons-material";
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import styled from "styled-components";
-import { useCart } from "../cart/ContextCart";
 import { useAuth } from "../../component/Auth";
 
 const Container = styled.div`
@@ -73,25 +71,20 @@ const ActiveNavLink = styled(NavLink)`
   }
 `;
 const NavbarFooter = () => {
-  const { cartCount } = useCart();
   const auth = useAuth();
   return (
     <Container>
       <Wrapper>
         <Left>
-          <Logo>Admin</Logo>
-          <ActiveNavLink to={`/user`}>User</ActiveNavLink>
-          <ActiveNavLink to={`/productA`}>Products</ActiveNavLink>
+          <ActiveNavLink to="/">
+            <Logo>Admin</Logo>
+          </ActiveNavLink>
+          <ActiveNavLink to={`/dashboard`}>User</ActiveNavLink>
+          <ActiveNavLink to={`/products`}>Products</ActiveNavLink>
         </Left>
         <Right>
           <MenuItem to="/login" onClick={auth.logout}>
             LogOut
-          </MenuItem>
-          <MenuItem>
-            <ActiveNavLink to="/cart">
-              <ShoppingCartOutlined />
-              {cartCount}
-            </ActiveNavLink>
           </MenuItem>
         </Right>
       </Wrapper>
