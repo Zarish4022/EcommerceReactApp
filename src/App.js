@@ -20,16 +20,6 @@ import { useAuth } from "./component/Auth";
 import Wish from "./pages/cart/Wish";
 import Unauthorized from "./pages/Admin/Unauthorized";
 import SingleProduct from "./component/ProductHomeList/SingleProduct";
-const express = require("express");
-const app = express();
-const port = 5001;
-
-app.get("/", (req, res) => {
-  res.send("/");
-});
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
 
 const App = () => {
   const { isAdmin } = useAuth();
